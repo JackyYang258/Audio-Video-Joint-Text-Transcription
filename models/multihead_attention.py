@@ -181,12 +181,33 @@ class MultiheadAttention(nn.Module):
         attn = None
         attn_weights = None
         ################################################################################
-        # TODO:                                                                        #
+        # TODO:                                                                       #
         #  finish the forward                                                          #
         ################################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        # Compute attention scores (query dot key)
+        attn_scores = torch.bmm(q, k.transpose(1, 2))
+
+        # Apply attention mask, if provided
+        if attn_mask is not None:
+            attn_scores = attn_scores.masked_fill(attn_mask, float('-inf'))
+
+        # Apply key_padding_mask
+        if key_padding_mask is not None:
+            attn_scores = attn_scores.masked_fill(key_padding_mask, float('-inf'))
+
+        # Scale the attention scores
+        attn_scores = attn_scores / torch.sqrt(self.head_dim)
+
+        # Normalize scores
+        attn_weights = F.softmax(attn_scores, dim=-1)
+
+        # Compute output (apply attention scores to values)
+        output = torch.bmm(attn_weights, v)
+
+        # Apply output projection
+        output = self.out_proj(output)
         
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ################################################################################
