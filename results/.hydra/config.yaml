@@ -26,7 +26,7 @@ common:
   amp_batch_retries: 2
   amp_init_scale: 128
   amp_scale_window: null
-  user_dir: /home/ai_hw_18/ly
+  user_dir: /home/ai_hw_18/group_18
   empty_cache_freq: 0
   all_gather_list_size: 16384
   model_parallel_size: 1
@@ -46,7 +46,7 @@ common_eval:
 distributed_training:
   _name: null
   distributed_world_size: 1
-  distributed_num_procs: 1
+  distributed_num_procs: 8
   distributed_rank: 0
   distributed_backend: nccl
   distributed_init_method: null

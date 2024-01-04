@@ -35,9 +35,17 @@ def label_smoothed_nll_loss(lprobs, target, epsilon, ignore_index=None, reduce=T
     #  finish the forward                                                          #
     ################################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    # get nll_loss (the loss without label smoothing)
+    nll_loss = -lprobs.gather(1, target.view(-1, 1))
+    Hup = -lprobs.mean(dim=1)
+    loss = epsilon*Hup.unsqueeze(1) + (1-epsilon)*nll_loss
+    if ignore_index is not None:
+        nll_loss[ignore_index] = 0
+        loss[ignore_index] = 0
 
-    pass
-
+    if reduce:
+        loss = torch.sum(loss)
+        nll_loss = torch.sum(nll_loss)
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ################################################################################
     #                              END OF YOUR CODE                                #

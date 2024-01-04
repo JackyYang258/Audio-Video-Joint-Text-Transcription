@@ -261,7 +261,6 @@ class AudioVideoDataset(FairseqDataset):
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         cap = cv2.VideoCapture(video_name)     # 读取视频
-        print(cap.isOpened())  # 检查是否打开正确  
 
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))

@@ -186,28 +186,36 @@ class MultiheadAttention(nn.Module):
         ################################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # bsz7 tgt_len 138 num_heads 12 head_dim 64
         # Compute attention scores (query dot key)
         attn_scores = torch.bmm(q, k.transpose(1, 2))
-
+        
         # Apply attention mask, if provided
         if attn_mask is not None:
-            attn_scores = attn_scores.masked_fill(attn_mask, float('-inf'))
+            attn_mask = attn_mask.unsqueeze(0)
+            attn_scores += attn_mask
 
         # Apply key_padding_mask
         if key_padding_mask is not None:
-            attn_scores = attn_scores.masked_fill(key_padding_mask, float('-inf'))
-
-        # Scale the attention scores
-        attn_scores = attn_scores / torch.sqrt(self.head_dim)
+            attn_scores = attn_scores.view(bsz, self.num_heads, tgt_len, src_len)
+            attn_scores = attn_scores.masked_fill(
+                key_padding_mask.unsqueeze(1).unsqueeze(2).to(torch.bool), float("-inf")
+            )
+            attn_scores = attn_scores.view(bsz * self.num_heads, tgt_len, src_len)
 
         # Normalize scores
         attn_weights = F.softmax(attn_scores, dim=-1)
-
         # Compute output (apply attention scores to values)
-        output = torch.bmm(attn_weights, v)
-
+        attn = torch.bmm(attn_weights, v)
         # Apply output projection
-        output = self.out_proj(output)
+        attn = attn.transpose(0, 1).contiguous().view(tgt_len, bsz, embed_dim)
+        attn = self.out_proj(attn)
+        
+        if need_weights:
+            attn_weights = attn_weights.view(bsz, self.num_heads, tgt_len, src_len)
+            attn_weights = attn_weights.mean(dim=1)
+            if list(attn_weights.size()) != [bsz, tgt_len, src_len]:
+                raise AssertionError("attn_weights shape error!")
         
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ################################################################################

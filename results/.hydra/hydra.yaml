@@ -1,6 +1,6 @@
 hydra:
   run:
-    dir: /home/ai_hw_18/ly/results
+    dir: /home/ai_hw_18/group_18/results
   sweep:
     dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
     subdir: ${hydra.job.config_name}__${hydra.job.override_dirname}
@@ -110,18 +110,18 @@ hydra:
   output_subdir: .hydra
   overrides:
     hydra:
-    - hydra.run.dir=/home/ai_hw_18/ly/results
+    - hydra.run.dir=/home/ai_hw_18/group_18/results
     - hydra.mode=RUN
     task:
     - task.data=/data2/final_project_data/30h_data
     - task.label_dir=/data2/final_project_data/30h_data
     - task.tokenizer_bpe_model=/data2/final_project_data/spm1000/spm_unigram1000.model
     - model.pretrained_path=/data2/final_project_ckpt/pretrained_model.pth
-    - common.user_dir=/home/ai_hw_18/ly
+    - common.user_dir=/home/ai_hw_18/group_18
   job:
     name: main
     chdir: null
-    override_dirname: common.user_dir-/home/ai_hw_18/ly__model.pretrained_path-/data2/final_project_ckpt/pretrained_model.pth__task.tokenizer_bpe_model-/data2/final_project_data/spm1000/spm_unigram1000.model
+    override_dirname: common.user_dir-/home/ai_hw_18/group_18__model.pretrained_path-/data2/final_project_ckpt/pretrained_model.pth__task.tokenizer_bpe_model-/data2/final_project_data/spm1000/spm_unigram1000.model
     id: ???
     num: ???
     config_name: video2text.yaml
@@ -143,21 +143,21 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.1'
-    cwd: /home/ai_hw_18/ly
+    cwd: /home/ai_hw_18/group_18
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /home/ai_hw_18/ly/configs
+    - path: /home/ai_hw_18/group_18/configs
       schema: file
       provider: main
-    - path: /home/ai_hw_18/ly/configs
+    - path: /home/ai_hw_18/group_18/configs
       schema: file
       provider: command-line
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /home/ai_hw_18/ly/results
+    output_dir: /home/ai_hw_18/group_18/results
     choices:
       hydra/env: default
       hydra/callbacks: null
